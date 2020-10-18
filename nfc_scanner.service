@@ -1,0 +1,12 @@
+[Unit]
+Description=Start NFC Scanner for Mopidy
+After=network-online.target
+[Service] 
+ExecStart=python3 main.py
+WorkingDirectory=/home/pi/workspace/mopidy_nfc_scanner
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+[Install]
+WantedBy=multi-user.target 
