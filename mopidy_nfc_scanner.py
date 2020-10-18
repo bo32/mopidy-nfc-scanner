@@ -4,7 +4,7 @@ import lib.pn532.pn532 as nfc
 from lib.pn532.uart import *
 
 import time
-TIME_FREQUENCY=3 # seconds
+TIME_FREQUENCY=2 # seconds
 
 class MopidyNfcScanner:
 
@@ -27,7 +27,12 @@ class MopidyNfcScanner:
             # Try again if no card is available.
             if uid is not None:
                 print('Found card with UID:', [hex(i) for i in uid])
-                self.read_value()
+                try:
+                    self.read_value()
+                except RuntimeError as e:
+                    print('Exception occured when scanning NFC tag. Please try again.')
+                    print(e.strerror)
+
                 print('waiting for {} seconds before next scan...'.format(TIME_FREQUENCY))
                 
                 time.sleep(TIME_FREQUENCY)  
@@ -54,21 +59,8 @@ class MopidyNfcScanner:
         self.process_value(raw_result)
 
     def process_value(self, decoded_value):
-        # try:
-        #     index = int(decoded_value)
-        # except ValueError:
-        #     print("'{}' is not an integer".format(decoded_value))
-        #     exit(1)
-        self.handler.play_value(decoded_value)
-
-
-
-
-    def _curate_url(self, raw_decoded_url):
-        '''
-        We expect to retrieve a URL starting with `http` and ending with `/`.
-        '''
-        if raw_decoded_url[-1] == '/':
-            return raw_decoded_url[:-1]
-        return raw_decoded_url
+        if len(decoded_value) == 3 and decoded_value.isnumeric():
+            self.handler.play_value(decoded_value)
+        else:
+            print('Wrong value scanned. Value must be a number of 3 digits. Please try again.')
 
