@@ -1,3 +1,9 @@
+#########################################
+# Work in progress, not tested !
+#########################################
+
+sudo apt-get update && sudo apt-get upgrade -y
+
 WORKING_DIR=~
 mkdir -p ${WORKING_DIR}
 cd ${WORKING_DIR}
@@ -9,12 +15,14 @@ sudo apt install git mopidy python3-pip
 sudo apt clean
 
 # Clone Git Repo
+git clone https://github.com/bo32/mopidy-nfc-scanner.git
+cd mopidy-nfc-scanner
 
 # Python
 python3 -m pip install -r requirements.txt
 
 # Mopidy plugins
-python3 -m pip install Mopidy-Iris Mopidy-Mobile Mopidy-YouTube Mopidy-API-Explorer --user
+python3 -m pip install Mopidy-Iris Mopidy-Mobile Mopidy-YouTube Mopidy-API-Explorer Mopidy-Local --user
 
 # Enable Serial
 #raspi-config nonint do_serial 1  # disable serial console
@@ -25,5 +33,3 @@ sudo cp nfc_scanner.service /etc/systemd/system/nfc_scanner.service \
     && sudo systemctl enable nfc_scanner.service
 sudo cp mopidy.service /etc/systemd/system/mopidy.service \
     && sudo systemctl enable mopidy.service
-
-# Nginx
