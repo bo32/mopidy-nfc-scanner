@@ -1,0 +1,19 @@
+---
+- name: add modipy gpg key
+  apt_key: 
+    urL: https://apt.mopidy.com/mopidy.gpg
+    state: present
+
+- name: add apt modipy list to the system
+  get_url:
+    url: https://apt.mopidy.com/buster.list
+    dest: /etc/apt/sources.list.d/mopidy.list
+
+- name: Update System Package Cache
+  apt: 
+    update_cache: yes
+
+- name: install mopidy
+  apt: 
+    name: mopidy
+    state: present

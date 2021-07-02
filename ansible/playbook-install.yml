@@ -1,0 +1,29 @@
+- hosts: localhost
+  gather_facts: false
+  
+  tasks:
+    - name: upgrade os
+      include_tasks:
+        file: ./tasks/upgrade_os.yml
+      become: yes
+
+    - name: install required dev tools 
+      include_tasks:
+        file: ./tasks/install_dev_tools.yml
+      become: yes
+
+    - name: install mopidy
+      include_tasks:
+        file: ./tasks/install_mopidy.yml
+      become: yes
+
+    - name: install modipy-nfc-scanner project
+      include_tasks:
+        file: ./tasks/install_project.yml
+      become: no
+
+    - name: bluetooth setup
+
+    
+    
+    

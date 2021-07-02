@@ -1,0 +1,4 @@
+---
+- name: clone repo
+  git:
+    repo: https://github.com/bo32/mopidy-nfc-scanner.git
