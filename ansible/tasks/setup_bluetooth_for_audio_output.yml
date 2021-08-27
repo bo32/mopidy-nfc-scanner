@@ -1,0 +1,16 @@
+---
+- name: install pulseaudio-module-bluetooth
+  apt:
+    name: pulseaudio-module-bluetooth
+    state: present
+    
+- name: install bluez
+  apt:
+    name: bluez
+    state: present
+
+- name: install bluez-tools
+  apt:
+    name: bluez-tools
+    state: present
+      
