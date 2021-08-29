@@ -1,0 +1,12 @@
+- name: Install Mopidy NFC scanner project
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: bluetooth setup
+      include_tasks:
+        file: ./tasks/setup_bluetooth_for_audio_output.yml
+
+    - name: set bluetooth speaker
+      include_tasks:
+        file: ./tasks/set_bluetooth_speaker.yml

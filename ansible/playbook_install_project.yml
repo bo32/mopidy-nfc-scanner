@@ -1,0 +1,31 @@
+- name: Install Mopidy NFC scanner project
+  hosts: localhost
+  gather_facts: false
+  become_method: sudo
+
+  tasks:
+    - name: enable VNC
+      shell: raspi-config nonint do_vnc 0
+      when: not keep_vnc_disabled or keep_vnc_disabled is not defined
+      become: yes
+
+    - name: install required dev tools 
+      include_tasks:
+        file: ./tasks/install_dev_tools.yml
+      become: yes
+
+    - name: install mopidy
+      include_tasks:
+        file: ./tasks/install_mopidy.yml
+      become: yes
+
+    - name: install mopidy-nfc-scanner project
+      include_tasks:
+        file: ./tasks/install_project.yml
+      
+    - name: initialize project
+      include_tasks:
+        file: ./tasks/init_project.yml
+   
+    
+    
