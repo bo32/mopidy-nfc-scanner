@@ -2,7 +2,6 @@
 - name: add mopidy gpg key
   apt_key: 
     url: https://apt.mopidy.com/mopidy.gpg
-    file: /tmp/mopidy.gpg
     state: present
   environment:
     APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE: "1"

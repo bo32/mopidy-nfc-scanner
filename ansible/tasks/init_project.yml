@@ -1,0 +1,26 @@
+---
+- name: create services
+  copy:
+    src: "{{ playbook_dir }}/../{{ item }}"
+    dest: "/etc/systemd/system//{{ item }}"
+  become: yes
+  loop:
+    - nfc_scanner.service
+    - mopidy.service
+
+- name: enable services
+  systemd:
+    state: started
+    enabled: yes
+    name: "{{ item }}"
+  become: yes
+  loop:
+    - nfc_scanner.service
+    - mopidy.service
+
+- name: enable Serial port
+  shell: "raspi-config nonint do_serial 0"
+  
+  
+
+   
