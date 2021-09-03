@@ -18,6 +18,10 @@ https://github.com/codebugtools/codebug_tether/issues/17
 
 http://mygeeks014.blogspot.com/2017/05/audio-streaming-to-bluetooth-speaker.html
 
+### Play Mopidy over pulseaudio
+
+https://docs.mopidy.com/en/release-2.3/service/#configure-pulseaudio
+
 ### Static IP address
 
 https://pimylifeup.com/raspberry-pi-static-ip-address/
