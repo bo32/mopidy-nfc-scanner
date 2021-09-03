@@ -1,0 +1,24 @@
+---
+- set_fact:
+    git_repo_name: mopidy-nfc-scanner
+
+- set_fact:
+    project_path: "~/apps/{{ git_repo_name }}"
+
+- name: create destination folder
+  file:
+    state: directory
+    path: "{{ project_path }}"
+  
+- name: clone repo
+  git:
+    repo: "https://github.com/bo32/{{ git_repo_name }}.git"
+    dest: "{{ project_path }}"
+
+- name: install project requirements
+  pip: 
+    requirements: "{{ project_path }}/requirements.txt"
+    extra_args: --user
+
+
+  

@@ -1,0 +1,30 @@
+---
+- name: add mopidy gpg key
+  apt_key: 
+    url: https://apt.mopidy.com/mopidy.gpg
+    state: present
+  environment:
+    APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE: "1"
+  become: yes
+
+- name: add apt mopidy list to the system
+  get_url:
+    url: https://apt.mopidy.com/buster.list # TODO buster should be a variable
+    dest: /etc/apt/sources.list.d/mopidy.list
+  become: yes
+
+- name: Update System Package Cache
+  apt: 
+    update_cache: yes
+  become: yes
+
+- name: install mopidy
+  apt: 
+    name: mopidy
+    state: present
+
+- name: install mopidy plugins
+  pip:
+    extra_args: --user
+    name: ['Mopidy-Iris', 'Mopidy-Mobile', 'Mopidy-YouTube', 'Mopidy-Local'] # , 'Mopidy-API-Explorer' error when installing last package but not when doing it manually
+    

@@ -1,0 +1,32 @@
+---
+- shell: pactl list sources short
+
+- shell: |
+    {   printf 'power on\n\n'
+        sleep 2
+        printf 'agent on\n\n'
+        sleep 2
+        printf 'default-agent\n\n'
+        sleep 2
+        printf 'discoverable on\n\n'
+        sleep 2
+        printf 'pair {{ device_mac }}\n\n'
+        sleep 2
+        printf 'trust {{ device_mac }}\n\n'
+        sleep 2
+        printf 'connect {{ device_mac }}\n\n'
+        sleep 2
+        printf 'quit\n\n'
+    } | bluetoothctl
+  
+- shell: pactl list sources short 
+  register: out
+
+- shell: "echo {{ out.stdout_lines[1] }} | awk '{print $1}'" 
+  register: sink_index
+  when: out.stdout_lines | length > 1
+
+- name: switch to bluetooth device 
+  shell: "pactl load-module module-loopback source=0 sink={{ sink_index | int }} rate=44100 adjust_time=0"
+  when: out.stdout_lines | length > 1
+
