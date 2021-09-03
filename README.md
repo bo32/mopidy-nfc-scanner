@@ -3,7 +3,7 @@
 ## Installation
 
 ```shell
-ansible-playbook ansible/playbook_install_project.yml --extra-vars="ansible_become_password=<become-password>" -vvv # FIXME the password should not be set via CLI
+ansible-playbook ansible/playbook_install_project.yml --extra-vars="ansible_become_password=<become-password ibrary_path=/path/to/music>" -vvv # FIXME the password should not be set via CLI
 ansible-playbook ansible/playbook_setup_bluetooth.yml --extra-vars="device_mac=<bluetooth-decive-MAC-address>" -vvv
 ```
 
