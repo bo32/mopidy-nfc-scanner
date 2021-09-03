@@ -23,6 +23,10 @@
       include_tasks:
         file: ./tasks/install_project.yml
       
+    - name: configure mopidy
+      include_tasks:
+        file: ./tasks/configure_mopidy.yml
+      
     - name: initialize project
       include_tasks:
         file: ./tasks/init_project.yml

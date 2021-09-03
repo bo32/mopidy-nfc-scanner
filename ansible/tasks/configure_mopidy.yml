@@ -1,0 +1,51 @@
+---
+- name: set modipy_conf_filepath variable
+  set_fact:
+    modipy_conf_filepath: ~/.config/mopidy/mopidy.conf
+
+- name: update HTTP config section
+  lineinfile: 
+    path: "{{ modipy_conf_filepath }}"
+    insertafter: "^\\[http\\]"
+    line: "hostname = 0.0.0.0"
+
+- name: update FILE config section
+  lineinfile: 
+    path: "{{ modipy_conf_filepath }}"
+    insertafter: "^\\[file\\]"
+    line: "{{ item }}"
+  loop:
+    - "  {{ library_path }}"
+    - "media_dirs = "
+
+- name: update AUDIO config section
+  lineinfile: 
+    path: "{{ modipy_conf_filepath }}"
+    insertafter: "^\\[audio\\]"
+    line: "output = pulsesink server=127.0.0.1"
+
+- name: update LOCAL config section
+  lineinfile: 
+    path: "{{ modipy_conf_filepath }}"
+    insertafter: "^\\[local\\]"
+    line: "media_dir = {{ library_path }}"
+
+- name: configure pulseaudio to accept sound over TCP from localhost
+  lineinfile: 
+    path: "/etc/pulse/default.pa"
+    line: "load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1"  
+  become: yes
+
+- name: restart pulseaudio
+  shell: |
+    pulseaudio --kill
+    pulseaudio --start
+      
+- name: restart mopidy
+  systemd:
+    name: mopidy
+    state: restarted
+  become: true
+
+- name: scan local library
+  shell: "mopidy --config {{ modipy_conf_filepath }} local scan"
