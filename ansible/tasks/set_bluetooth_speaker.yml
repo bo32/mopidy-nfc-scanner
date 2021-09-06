@@ -22,7 +22,7 @@
 - shell: pactl list sources short 
   register: out
 
-- shell: "echo {{ out.stdout_lines[1] }} | awk '{print $1}'" 
+- shell: "echo {{ out.stdout_lines[:1] }} | awk '{print $1}'" 
   register: sink_index
   when: out.stdout_lines | length > 1
 
