@@ -30,3 +30,9 @@
   shell: "pactl load-module module-loopback source=0 sink={{ sink_index | int }} rate=44100 adjust_time=0"
   when: out.stdout_lines | length > 1
 
+- name: create reconnect script
+  template: 
+    src: templates/reconnect_bluetooth.sh.j2
+    dest: /home/pi/.local/bin/reconnect_bluetooth.sh # present in PATH
+    mode: '0755'
+

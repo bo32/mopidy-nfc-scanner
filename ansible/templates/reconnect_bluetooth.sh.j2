@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+BLUETOOTH_DEVICE="{{ device_mac }}"
+
+{
+    echo "disconnect ${BLUETOOTH_DEVICE}\n"
+    sleep 5
+    echo "connect ${BLUETOOTH_DEVICE}\n"
+    sleep 5
+    echo "quit\n"
+} | bluetoothctl
+
+OUTPUT_INDEX=$(pactl list sources short | awk 'END {print $1}')
+pactl load-module module-loopback source=0 sink=${OUTPUT_INDEX} rate=44100 adjust_time=0
