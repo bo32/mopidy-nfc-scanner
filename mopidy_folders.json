@@ -1,41 +1,14 @@
 {
-    "music_folder": "/media/pi/DATA",
+    "music_folder": "/path/to/music",
     "items": [
         {
             "index": 1,
-            "uri": "file://[music_folder]/Daft%20Punk%20-%20Random%20Access%20Memories"
+            "uri": "file://[music_folder]/Foo"
         },
         {
             "index": 2,
-            "uri": "file://[music_folder]/Eiv%C3%B8r%20-%20Live%20In%20T%C3%B3rshavn"
-        },
-        {
-            "index": 3,
-            "uri": "file:///media/pi/DATA/Bob%20Marley%20-%20Legend%20%28Deluxe%20Edition%29"
-        },
-        {
-            "index": 4,
-            "uri": "file:///media/pi/DATA/Ratatat%20-%20Magnifique"
-        },
-        {
-            "index": 5,
-            "uri": "file://[music_folder]/Barnasangir"
-        },
-        {
-            "index": 6,
-            "uri": "file://[music_folder]/Les%20Cowboys%20Fringants%20-%20Motel%20Capri"
-        },
-        {
-            "index": 7,
-            "uri": "file://[music_folder]/Teitur%20-%20The%20Singer"
-        },
-        {
-            "index": 8,
-            "uri": "file://[music_folder]/Chinese%20Man%20-%20The%20Groove%20Sessions"
-        },
-        {
-"index":9,"uri":"file://[music_folder]/The%20Beatles%20-%201%20%28Best%20of%29"
-},{"index":10,"uri":"file://[music_folder]/Creedence%20Clearwater%20Revival%20-%20The%20Ultimate%20Collection"}
+            "uri": "file:///home/pi/Music/Dummy"
+        }
     ]
 }
 
