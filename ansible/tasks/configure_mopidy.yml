@@ -1,13 +1,19 @@
 ---
 - name: set modipy_conf_filepath variable
   set_fact:
-    modipy_conf_filepath: ~/.config/mopidy/mopidy.conf
+    modipy_conf_filepath: "{{ remote_mopidy_conf_folder }}/mopidy.conf"
 
 - name: update HTTP config section
   lineinfile: 
     path: "{{ modipy_conf_filepath }}"
     insertafter: "^\\[http\\]"
     line: "hostname = 0.0.0.0"
+
+- name: update API_EXPLORER config section
+  lineinfile: 
+    path: "{{ modipy_conf_filepath }}"
+    insertafter: "^\\[api_explorer\\]"
+    line: "enabled = true"
 
 - name: update FILE config section
   lineinfile: 

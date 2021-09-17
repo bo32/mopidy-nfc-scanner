@@ -1,5 +1,7 @@
 import requests
 import json
+
+import logger
         
 MOPIDY_BROWSE_LIBRARY = 'core.library.browse'
 
@@ -15,6 +17,8 @@ MOPIDY_PLAYBACK_STATE = 'core.playback.get_state'
 
 RPC_JSON_BASE = {'jsonrpc': '2.0', 'id': '1'}
 
+LOGGER = logger.get_logger(__name__)
+
 class MopidyHttpService:
 
     def __init__(self, host):
@@ -22,12 +26,12 @@ class MopidyHttpService:
         self.currently_playing = None
 
     def play_value(self, value: str):
-        print(value)
+        LOGGER.info(value)
         try:
             value_type = int(value[0])
             value_index = int(value[1:])
         except ValueError:
-            print('Cannot convert integer value')
+            LOGGER.warn('Cannot convert integer value')
             return
 
         if self.currently_playing == value:
@@ -44,7 +48,7 @@ class MopidyHttpService:
         elif value_type == 9:
             self.play_station_index(value_index)
         else:
-            print('Cannot process {}'.format(str(value_type)))
+            LOGGER.warn('Cannot process {}'.format(str(value_type)))
         
         self.currently_playing = value
 
@@ -56,10 +60,15 @@ class MopidyHttpService:
         with open(file) as json_file:
             data = json.load(json_file)
             for folder in data['items']:
-                print(folder)
+                LOGGER.info(folder)
                 if folder['index'] == index:
                     return folder['uri']
         return None
+
+    def get_music_folder_value_from_folders_file(self):
+        with open('mopidy_folders.json') as json_file:
+            data = json.load(json_file)
+            return data['music_folder']
 
     def get_youtube_playlist_uri_from_index(self, index):
         return self.get_uri_from_index_and_file(index, 'mopidy_youtube_playlists.json')
@@ -69,19 +78,19 @@ class MopidyHttpService:
 
     def play_station_index(self, index: int):
         uri = self.get_station_uri_from_index(index)
-        print('Retrieved URI: {}'.format(uri))
+        LOGGER.info('Retrieved URI: {}'.format(uri))
         self.stop_and_clear()
         self.add_uri_to_tracklist(uri)
         self.play()
 
     def play_folder_index(self, index: int):
         uri = self.get_folder_uri_from_index(index)
-        print('Retrieved URI: {}'.format(uri))
+        LOGGER.info('Retrieved URI: {}'.format(uri))
         self.play_folder_uri(uri)
 
     def play_youtube_playlist_index(self, index: int):
         uri = self.get_youtube_playlist_uri_from_index(index)
-        print('Retrieved URI: {}'.format(uri))
+        LOGGER.info('Retrieved URI: {}'.format(uri))
         self.play_youtube_playlist(uri)
 
     def add_uri_to_tracklist(self, uri):
@@ -94,27 +103,27 @@ class MopidyHttpService:
         self.shuffle()
 
     def play(self):
-        print('PLAY')
+        LOGGER.info('PLAY')
         self.send_modipy_rpc_request(MOPIDY_PLAYBACK_PLAY)
 
     def resume(self):
-        print('RESUME')
+        LOGGER.info('RESUME')
         self.send_modipy_rpc_request(MOPIDY_PLAYBACK_RESUME)
     
     def pause(self):
-        print('PAUSE')
+        LOGGER.info('PAUSE')
         self.send_modipy_rpc_request(MOPIDY_PLAYBACK_PAUSE)
     
     def shuffle(self):
-        print('SHUFFLE')
+        LOGGER.info('SHUFFLE')
         self.send_modipy_rpc_request(MOPIDY_TRACKLIST_SHUFFLE)
 
     def stop(self):
-        print('STOP')
+        LOGGER.info('STOP')
         self.send_modipy_rpc_request(MOPIDY_PLAYBACK_STOP)
     
     def clear(self):
-        print('CLEAR TRACK LIST')
+        LOGGER.info('CLEAR TRACK LIST')
         self.send_modipy_rpc_request(MOPIDY_TRACKLIST_CLEAR)
 
     def stop_and_clear(self):
@@ -128,18 +137,27 @@ class MopidyHttpService:
         return requests.post(self.host, json=json)
 
     def play_folder_uri(self, uri: str):
-        print('Sending folder content to player...')
+        LOGGER.info('Sending folder content to player...')
         # response = requests.post(self.host, json={'jsonrpc': '2.0', 'id': '1', 'method': MOPIDY_BROWSE_LIBRARY, 'params': {'uri': uri}})
         response = self.send_modipy_rpc_request(MOPIDY_BROWSE_LIBRARY, {'uri': uri})
         payload = response.json()
 
         tracks = json.loads(json.dumps(payload))['result']
+        if not tracks:
+            LOGGER.warn('No tracks retrieved.')
+            return
 
         self.stop_and_clear()
         is_first = True # Used to start playing as soon as the first track is added
         for track in tracks:
             uri = str(track['uri'])
-            print('Adding {}...'.format(uri))
+
+            music_folder_placeholder = '[music_folder]'
+            if music_folder_placeholder in uri:
+                music_folder_value = self.get_music_folder_value_from_folders_file()
+                uri = uri.replace(music_folder_placeholder, music_folder_value)
+
+            LOGGER.info('Adding {}...'.format(uri))
             self.add_uri_to_tracklist(uri)
             if is_first:
                 self.play()

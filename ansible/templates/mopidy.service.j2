@@ -1,0 +1,12 @@
+[Unit]
+Description=Start Mopidy
+After=network-online.target
+[Service] 
+ExecStart=python3 -m mopidy
+WorkingDirectory=/home/{{ ansible_user }}
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+[Install]
+WantedBy=multi-user.target 

@@ -1,24 +1,45 @@
 ---
-- set_fact:
-    git_repo_name: mopidy-nfc-scanner
+- name: set remote conf folder variables
+  set_fact: 
+    remote_mopidy_conf_folder: "/home/{{ ansible_user }}/.config/mopidy/"
+    remote_project_app_folder: "/home/{{ ansible_user }}/apps/nfc-scanner/"
 
-- set_fact:
-    project_path: "~/apps/{{ git_repo_name }}"
-
-- name: create destination folder
+- name: create dir 
   file:
+    path: "{{ remote_project_app_folder }}/lib/pn532"
     state: directory
-    path: "{{ project_path }}"
-  
-- name: clone repo
-  git:
-    repo: "https://github.com/bo32/{{ git_repo_name }}.git"
-    dest: "{{ project_path }}"
+    mode: '0755'
+
+- name: copy NFC Scanner configuration files
+  copy:
+    src: "{{ playbook_dir }}/../{{ item }}"
+    dest: "{{ remote_project_app_folder }}/{{ item }}"
+  loop:
+    - requirements.txt
+    - mopidy_folders.json
+    - mopidy_stations.json
+    - mopidy_youtube_playlists.json
+    - main.py
+    - logger.py
+    - mopidy_nfc_scanner.py
+    - mopidy_http_service.py
+    - lib/pn532/i2c.py
+    - lib/pn532/spi.py
+    - lib/pn532/uart.py
+    - lib/pn532/pn532.py
 
 - name: install project requirements
   pip: 
-    requirements: "{{ project_path }}/requirements.txt"
+    requirements: "{{ remote_project_app_folder }}/requirements.txt"
     extra_args: --user
 
+- name: push templates for services
+  template:
+    src: "templates/{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}"
+  become: yes
+  loop:
+    - mopidy.service
+    - nfc_scanner.service
 
   
