@@ -1,7 +1,7 @@
 # to be scheduled with crontab
 
 from mopidy_http_service import MopidyHttpService
-httpService = MopidyHttpService('http://filip.local:6680/mopidy/rpc')
+httpService = MopidyHttpService('http://localhost:6680/mopidy/rpc')
 
 if not httpService.is_playing():
     import os
