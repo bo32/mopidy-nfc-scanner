@@ -3,7 +3,7 @@ import RPi.GPIO as GPIO
 import lib.pn532.pn532 as nfc
 from lib.pn532.uart import *
 
-import logger
+from lib import logger
 
 import time
 TIME_FREQUENCY=2 # seconds

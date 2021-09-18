@@ -1,8 +1,6 @@
-import logging 
-
-from mopidy_nfc_scanner import MopidyNfcScanner
-from mopidy_http_service import MopidyHttpService
-import logger
+from lib.mopidy_nfc_scanner import MopidyNfcScanner
+from lib.mopidy_http_service import MopidyHttpService
+from lib import logger
 
 def main():
     LOGGER = logger.get_logger(__name__)

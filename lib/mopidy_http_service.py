@@ -1,7 +1,7 @@
 import requests
 import json
 
-import logger
+from lib import logger
         
 MOPIDY_BROWSE_LIBRARY = 'core.library.browse'
 
