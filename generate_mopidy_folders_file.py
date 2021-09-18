@@ -19,7 +19,7 @@ def main():
     data['items'] = []
     for i, folder in enumerate(library_folder.glob('*')):
         data['items'].append({
-            'index': i,
+            'index': i + 1,
             'uri': folder.as_uri().replace(library_folder_path, '[music_folder]')
         })
 
