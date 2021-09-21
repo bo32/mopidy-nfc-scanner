@@ -20,9 +20,9 @@
     - mopidy_stations.json
     - mopidy_youtube_playlists.json
     - main.py
-    - logger.py
-    - mopidy_nfc_scanner.py
-    - mopidy_http_service.py
+    - lib/logger.py
+    - lib/mopidy_nfc_scanner.py
+    - lib/mopidy_http_service.py
     - lib/pn532/i2c.py
     - lib/pn532/spi.py
     - lib/pn532/uart.py
