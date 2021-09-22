@@ -17,6 +17,8 @@ MOPIDY_PLAYBACK_STATE = 'core.playback.get_state'
 
 RPC_JSON_BASE = {'jsonrpc': '2.0', 'id': '1'}
 
+MUSIC_FOLDER_PLACEHOLDER = '[music_folder]'
+
 LOGGER = logger.get_logger(__name__)
 
 class MopidyHttpService:
@@ -37,10 +39,13 @@ class MopidyHttpService:
         if self.currently_playing == value:
             if self.is_playing():
                 self.pause()
+                return
             elif self.is_paused():
                 self.resume()
-            return
+                return
+        self.process_value(value_index, value_type)
 
+    def process_value(self, value_index, value_type):
         if value_type == 1:
             self.play_folder_index(value_index)
         elif value_type == 2:
@@ -60,9 +65,9 @@ class MopidyHttpService:
         with open(file) as json_file:
             data = json.load(json_file)
             for folder in data['items']:
-                LOGGER.info(folder)
                 if folder['index'] == index:
                     return folder['uri']
+        LOGGER.info('No URI retrieved!')
         return None
 
     def get_music_folder_value_from_folders_file(self):
@@ -86,6 +91,11 @@ class MopidyHttpService:
     def play_folder_index(self, index: int):
         uri = self.get_folder_uri_from_index(index)
         LOGGER.info('Retrieved URI: {}'.format(uri))
+
+        if MUSIC_FOLDER_PLACEHOLDER in uri:
+            music_folder_value = self.get_music_folder_value_from_folders_file()
+            uri = uri.replace(MUSIC_FOLDER_PLACEHOLDER, music_folder_value)
+            LOGGER.info('Updated URI: {}'.format(uri))
         self.play_folder_uri(uri)
 
     def play_youtube_playlist_index(self, index: int):
@@ -151,11 +161,6 @@ class MopidyHttpService:
         is_first = True # Used to start playing as soon as the first track is added
         for track in tracks:
             uri = str(track['uri'])
-
-            music_folder_placeholder = '[music_folder]'
-            if music_folder_placeholder in uri:
-                music_folder_value = self.get_music_folder_value_from_folders_file()
-                uri = uri.replace(music_folder_placeholder, music_folder_value)
 
             LOGGER.info('Adding {}...'.format(uri))
             self.add_uri_to_tracklist(uri)
